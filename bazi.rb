@@ -59,6 +59,7 @@ def main()
 		puts "#{v["五行"][element]}\t#{wuxingcount[element].to_i}\t#{zichangwuxingcount[element].to_i}\t#{wuxingcount[element].to_i + zichangwuxingcount[element].to_i }"
 		
 	}
+	
 
 
 
