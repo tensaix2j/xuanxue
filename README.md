@@ -8,7 +8,7 @@
 	
 
 	八字
-		根据: [bazi](http://bjtime.cn/bazi.asp)
+		根据: [八字计算和真太阳时](http://bjtime.cn/bazi.asp)
 		Usage: ruby bazi.rb <出生日期>
 		Example: ruby bazi.rb "1985/12/21 12:24"
 
