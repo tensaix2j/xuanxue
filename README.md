@@ -7,8 +7,8 @@
 
 	紫薇
 		根据: http://v.youku.com/v_show/id_XMjcwOTA2NDI0.html
-		Usage: ruby zhiwei.rb <出生日期>
-		Example: ruby zhiwei.rb "1985/12/21 12:24"
+		Usage: ruby ziwei.rb <出生日期>
+		Example: ruby ziwei.rb "1985/12/21 12:24"
 
 
 	八字
