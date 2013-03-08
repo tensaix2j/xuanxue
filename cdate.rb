@@ -15,6 +15,7 @@
       
       # 检测locale信息
       #locale
+      chs
 
     end
 
@@ -111,6 +112,8 @@
       end
     end
 
+    public
+
     # 根据儒略日数算公历
     def jd2date(jd)
       raise ArgumentError, 'jd cannot be negative.' if jd < 0
@@ -155,7 +158,7 @@
       return (365.25*(year+4716)).floor + (30.6001*(month+1)).floor + day + b - 1524.5
     end
 
-    public
+    
 
     # 设置语言环境
     # loc可为:zh_cn, :zh_sg, :zh_tw, :zh_hk, :zh_mo其中之一
@@ -200,7 +203,7 @@
       year = jd2date(jd)[0] # jd2date比Date类算起来快
       return @cache[year] if @cache.has_key?(year)
 
-      dat = GolEph.calc_y(jd - GolEph::J2000)
+      dat = CCal::GolEph.calc_y(jd - CCal::GolEph::J2000)
 
       # 找正月初一，即春节
       i = dat[:hs][2] # 一般第三个月为正月
@@ -232,7 +235,7 @@
     #
     def calc_day(jd)
       dat = calc_year(jd)
-      jd -= GolEph::J2000 # 底层代码以2k年起算
+      jd -= CCal::GolEph::J2000 # 底层代码以2k年起算
       d = {}
 
       # 干支纪年、生肖
@@ -266,6 +269,9 @@
       d[:cmleap] = dat[:leap] == i ? true : false # 是否闰月
       d[:cmdays] = dat[:dx][i] # 该月多少天，判断大小月
       d[:cmonth] = @months[dat[:ym][i]]
+
+      d[:imonth] = (dat[:ym][i] - 2) % 12
+      d[:iday] = (jd - dat[:hs][i]).floor()
 
       # 日
       d[:cday] = @days[jd - dat[:hs][i]]
@@ -309,6 +315,13 @@
       d[2] -= 0.5
       return d
     end
+
+
+    def to_ccal( dt ) 
+      jdt = date2jd( dt.year, dt.month , dt.day )
+      return calc_day( jdt );
+    end 
+
 
     # 时区到经度的对应值
     ZONE2LNG = {-12=>-3.141592653589793, -11=>-2.8797932657906435, -10=>-2.6179938779914944, -9=>-2.356194490192345, -8=>-2.0943951023931953, -7=>-1.832595714594046, -6=>-1.5707963267948966, -5=>-1.3089969389957472, -4=>-1.0471975511965976, -3=>-0.7853981633974483, -2=>-0.5235987755982988, -1=>-0.2617993877991494, 0=>0.0, 1=>0.2617993877991494, 2=>0.5235987755982988, 3=>0.7853981633974483, 4=>1.0471975511965976, 5=>1.3089969389957472, 6=>1.5707963267948966, 7=>1.832595714594046, 8=>2.0943951023931953, 9=>2.356194490192345, 10=>2.6179938779914944, 11=>2.8797932657906435, 12=>3.141592653589793}
