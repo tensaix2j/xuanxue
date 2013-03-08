@@ -49,7 +49,9 @@ def main()
 	sizhu = nongli.bazi( dt )
 	nongdate = nongli.to_ccal( dt );
 
+	#农历
 	puts "#{ nongdate[:cmonth] }月 #{ nongdate[:cday]}"
+
 
 	#八字
 	(0...4).each { |i|
@@ -66,8 +68,14 @@ def main()
 
 
 	#五局
-	monthoff = o["五虎遁"][  sizhu[0][0] + minggong < 2 ? 1 : 0   ]
-	wuxingju = o["五行局"][[ (monthoff + minggong - 2) % 10 ,minggong] ]
+	monthoff = []
+	monthoff[0] = o["五虎遁"][  sizhu[0][0] ]
+	monthoff[1] = o["五虎遁"][  (sizhu[0][0] + 1) % 10 ]
+
+	effective_monthoff = monthoff[ minggong < 2 ? 1 : 0 ]
+
+
+	wuxingju = o["五行局"][[ (effective_monthoff + minggong - 2) % 10 ,minggong] ]
 	
 	print v["五行局"][ wuxingju],"局"
 	puts ""
@@ -107,7 +115,9 @@ def main()
 
 	(0...12).each do |i|
 
-		print v["地支"][i]," "
+		effective_monthoff = monthoff[ i < 2 ? 1 : 0 ]
+
+		print v["天干"][(effective_monthoff + i - 2) % 10],v["地支"][i]," "
 		print v["十二宫"][ (12 - (i - minggong )) % 12]
 		print "(身)" if i == shengong 
 		print "(紫薇星)" if i == ziweixing 
