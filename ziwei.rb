@@ -17,6 +17,7 @@ def main()
 	v["十二宫"]  = 	[ "命宫", "兄弟", "夫妻", "子女", "财帛", "疾厄", "迁移", "仆役", "官禄", "田宅", "福德", "父母"]
 	v["五行"] 	= 	[ "金","木","水","火","土"]
 	v["五行局"] 	=	[ "水二","木三","金四","土五","火六" ]
+	v["长生"]  = 	[ "长生" ,"沐浴" ,"冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝" ,"胎" ,"养"]
 
 	o = {}
 	o["五虎遁"] = [ 2,4,6,8,0,2,4,6,8,0]
@@ -79,7 +80,8 @@ def main()
 	
 	print v["五行局"][ wuxingju],"局"
 	puts ""
-	print v["地支"][ o["长生"][wuxingju] ]," 长生"	
+
+	changshen_off = o["长生"][wuxingju]
 	puts "\n\n"
 	
 
@@ -116,9 +118,13 @@ def main()
 	(0...12).each do |i|
 
 		effective_monthoff = monthoff[ i < 2 ? 1 : 0 ]
+		gan = (effective_monthoff + i - 2) % 10
 
-		print v["天干"][(effective_monthoff + i - 2) % 10],v["地支"][i]," "
+		print v["天干"][gan],v["地支"][i]," "
 		print v["十二宫"][ (12 - (i - minggong )) % 12]
+
+		print " ",v["长生"][ (i - changshen_off) % 12 ]," "
+
 		print "(身)" if i == shengong 
 		print "(紫薇星)" if i == ziweixing 
 
