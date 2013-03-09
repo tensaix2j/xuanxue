@@ -45,6 +45,8 @@ def main()
 	o["火星"]	= [ 2,  3,1, 9,  2, 3,1, 9,  2, 3,1, 9  ]
 	o["铃星"] 	= [ 10,10,3,10, 10,10,3,10, 10,10,3,10  ]
 
+	o["天马"] 	= [ 2,11,8,5, 2,11,8,5, 2,11,8,5  ]
+
 
 	if ARGV.length < 1
 		puts "Usage: ruby ziwei.rb <datetime>"
@@ -123,6 +125,11 @@ def main()
 	pojun		= (tianfu + 10 ) % 12
 
 
+
+
+
+	# 14 吉凶星
+
 	# 7 吉星
 	# 左辅， 右弼， 文曲， 文昌， 天魁， 天月， 禄存
 	zuofu = (4 + nongdate[:imonth]) % 12
@@ -136,13 +143,31 @@ def main()
 
 
 	# 7 凶星
-	# 擎羊，陀螺， 火星，铃星 ,地空，地劫
+	# 擎羊，陀螺， 火星，铃星 ,地空，地劫, 七杀
 	qingyang = (lucun + 1) % 12
 	tuoluo   = (lucun - 1) % 12
 	huoxing  = (o["火星"][sizhu[0][1]] + sizhu[3][1]) % 12
 	lingxing  = (o["铃星"][sizhu[0][1]] + sizhu[3][1]) % 12
 	dikong  = (11 - sizhu[3][1]) % 12
 	dijie   = (11 + sizhu[3][1]) % 12
+
+
+	# 杂耀星
+	# 天马， 红鸳， 天喜 ， 孤辰 ，寡宿
+	tianma  = o["天马"][sizhu[0][1]]
+	hongyuan = (3 - sizhu[0][1]) % 12	
+	tianxi  = (hongyuan + 6) % 12
+
+	trio_grp = ((sizhu[0][1] + 1) % 12) / 3
+	trio_grp_next = [2,5,8,11]
+	trio_grp_prev = [10,7,4,1]
+	guchen 	= trio_grp_next[trio_grp]
+	guasu 	= trio_grp_prev[trio_grp]
+
+	tianxing = (9 + nongdate[:imonth])  % 12
+	tianyao  = (1 + nongdate[:imonth])  % 
+	tiande  = (9 + sizhu[0][1]) % 12
+	nianjie = (10 - sizhu[0][1]) % 12
 
 
 	(0...12).each do |i|
@@ -187,7 +212,17 @@ def main()
 		print "(铃星)" if i == lingxing
 		print "(地空)" if i == dikong
 		print "(地劫)" if i == dijie
-									
+		
+		print "(天马)" if i == tianma
+		print "(红鸳)" if i == hongyuan
+		print "(天喜)" if i == tianxi
+		print "(孤辰)" if i == guchen
+		print "(寡宿)" if i == guasu
+		print "(天刑)" if i == tianxing
+		print "(天姚)" if i == tianyao
+		print "(天德)" if i == tiande
+		print "(年解)" if i == nianjie
+												
 							
 		puts ""
 	end
