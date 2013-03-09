@@ -153,7 +153,7 @@ def main()
 
 
 	# 杂耀星
-	# 天马， 红鸳， 天喜 ， 孤辰 ，寡宿
+	# 天马， 红鸳， 天喜 ， 孤辰 ，寡宿, 天刑， 天姚， 天德， 年解
 	tianma  = o["天马"][sizhu[0][1]]
 	hongyuan = (3 - sizhu[0][1]) % 12	
 	tianxi  = (hongyuan + 6) % 12
