@@ -9,6 +9,14 @@ require 'time'
 
 def main()
 
+
+	if ARGV.length < 1
+		puts "Usage: ruby ziwei.rb <datetime>"
+		return
+	end
+
+
+
 	v = {}
 	v["天干"] 	= 	[ "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸" ]
 	v["地支"] 	= 	[ "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
@@ -63,23 +71,46 @@ def main()
 				}
 
 
-	o["长生"] = [ 8, 11, 6, 2, 2 ]
-	o["天府"] = [ 4, 3, 2, 1, 0, 11, 10, 9 , 8 ,7 , 6, 5 ]
-
+	o["长生"] 	= [ 8, 11, 6, 2, 2 ]
+	o["天府"] 	= [ 4, 3, 2, 1, 0, 11, 10, 9 , 8 ,7 , 6, 5 ]
 	o["天魁"] 	= [  1,  0, 11,11, 1,0,   1,6,5,5   ]
 	o["天钺"] 	= [  7,  8,  9, 9, 7,8,   7,2,3,3   ]
 	o["禄存"] 	= [  2, 3,  5, 6 ,5,   6, 8,9, 11, 0]   
-
 	o["火星"]	= [ 2,  3,1, 9,  2, 3,1, 9,  2, 3,1, 9  ]
 	o["铃星"] 	= [ 10,10,3,10, 10,10,3,10, 10,10,3,10  ]
-
 	o["天马"] 	= [ 2,11,8,5, 2,11,8,5, 2,11,8,5  ]
 
 
-	if ARGV.length < 1
-		puts "Usage: ruby ziwei.rb <datetime>"
-		return
-	end
+	v["星"] = [ 	"紫薇","天机","太阳","武曲","天同","廉贞",   				#0-5
+				"天府","太阴","贪狼","巨门","天相","天梁","七杀","破军",		#6-13
+				"左辅","右弼","文曲","文昌","天魁","天钺","禄存",			#14-20
+				"擎羊","陀螺","火星","铃星","地空","地劫",					#21-26
+				"天马","红鸳","天喜","孤辰","寡宿","天刑","天姚","天德","年解" ] #27-35
+
+	xi = {}
+	xing_id = 0
+	v["星"].each { |name| 
+		xi[name] = xing_id
+		xing_id += 1
+	}
+
+	v["十干四化"] = [ "禄","权","科","忌"]
+	o["十干四化"] = [
+						[ "廉贞", "破军" ,"武曲","太阳" ],
+						[ "天机", "天梁" ,"紫薇","太阴" ],
+						[ "天同", "天机" ,"文昌","廉贞" ],
+						[ "太阴", "天同" ,"天机","巨门" ],
+						[ "贪狼", "太阴" ,"右弼","天机" ],
+						[ "武曲", "贪狼" ,"天梁","文曲" ],
+						[ "太阳", "武曲" ,"天府","天同" ],
+						[ "巨门", "太阳" ,"文曲","文昌" ],
+						[ "天梁", "紫薇" ,"左辅","武曲" ],
+						[ "破军", "巨门" ,"太阴","贪狼" ]
+					]	
+
+
+
+
 
 
 	nongli = CDate.new()
@@ -124,6 +155,7 @@ def main()
 	
 
 	# 紫薇 ,天机, 太阳, 武曲, 天同. 廉贞
+	xp = []
 
 	x = 0
 	(0...6).each { |i|
@@ -135,72 +167,74 @@ def main()
 	y = (nongdate[:iday] + 1 + x) / ( wuxingju + 2 )
 	
 	if x % 2 == 0
-		ziwei = (y + 1 + x) % 12
+		xp[xi["紫薇"]] = (y + 1 + x) % 12
 	else
-		ziwei = (y + 1 - x) % 12
+		xp[xi["紫薇"]] = (y + 1 - x) % 12
 	end
 
 	
-	tianji 		= (ziwei - 1) % 12
-	taiyang 	= (ziwei - 3) % 12
-	wuqu 		= (ziwei - 4) % 12
-	tiantong 	= (ziwei - 5) % 12
-	lianzhen	= (ziwei - 8) % 12
+	xp[xi["天机"]] = (xp[xi["紫薇"]] - 1) % 12
+	xp[xi["太阳"]] = (xp[xi["紫薇"]] - 3) % 12
+	xp[xi["武曲"]] = (xp[xi["紫薇"]] - 4) % 12
+	xp[xi["天同"]] = (xp[xi["紫薇"]] - 5) % 12
+	xp[xi["廉贞"]] = (xp[xi["紫薇"]] - 8) % 12
 
 	# 天府，太阴，贪狼， 巨门，天相，天梁， 七杀， 破军
-	tianfu 		= o["天府"][ziwei]
-	taiyin		= (tianfu + 1 ) % 12
-	tanlang 	= (tianfu + 2 ) % 12
-	jumen		= (tianfu + 3 ) % 12
-	tianxiang 	= (tianfu + 4 ) % 12
-	tianliang	= (tianfu + 5 ) % 12
-	qisha		= (tianfu + 6 ) % 12
-	pojun		= (tianfu + 10 ) % 12
-
-
-
+	xp[xi["天府"]] 	= o["天府"][xp[xi["紫薇"]]]
+	xp[xi["太阴"]]	= (xp[xi["天府"]] + 1 ) % 12
+	xp[xi["贪狼"]]	= (xp[xi["天府"]] + 2 ) % 12
+	xp[xi["巨门"]]	= (xp[xi["天府"]] + 3 ) % 12
+	xp[xi["天相"]]	= (xp[xi["天府"]] + 4 ) % 12
+	xp[xi["天梁"]]	= (xp[xi["天府"]] + 5 ) % 12
+	xp[xi["七杀"]]	= (xp[xi["天府"]] + 6 ) % 12
+	xp[xi["破军"]]	= (xp[xi["天府"]] + 10 ) % 12
 
 
 	# 14 吉凶星
 
 	# 7 吉星
-	# 左辅， 右弼， 文曲， 文昌， 天魁， 天月， 禄存
-	zuofu = (4 + nongdate[:imonth]) % 12
-	youbi = (10 - nongdate[:imonth]) % 12
-	wenqu = (4 + sizhu[3][1] ) % 12
-	wenchang = (10 - sizhu[3][1]) % 12
-	tiankui = o["天魁"][sizhu[0][0]] 
-	tianyue = o["天钺"][sizhu[0][0]]
-	lucun = o["禄存"][sizhu[0][0]]
+	# 左辅， 右弼， 文曲， 文昌， 天魁， 天钺， 禄存
+	xp[xi["左辅"]] = (4 + nongdate[:imonth]) % 12
+	xp[xi["右弼"]] = (10 - nongdate[:imonth]) % 12
+	xp[xi["文曲"]] = (4 + sizhu[3][1] ) % 12
+	xp[xi["文昌"]] = (10 - sizhu[3][1]) % 12
+	xp[xi["天魁"]] = o["天魁"][sizhu[0][0]] 
+	xp[xi["天钺"]] = o["天钺"][sizhu[0][0]]
+	xp[xi["禄存"]] = o["禄存"][sizhu[0][0]]
 
 
 
 	# 7 凶星
-	# 擎羊，陀螺， 火星，铃星 ,地空，地劫, 七杀
-	qingyang = (lucun + 1) % 12
-	tuoluo   = (lucun - 1) % 12
-	huoxing  = (o["火星"][sizhu[0][1]] + sizhu[3][1]) % 12
-	lingxing  = (o["铃星"][sizhu[0][1]] + sizhu[3][1]) % 12
-	dikong  = (11 - sizhu[3][1]) % 12
-	dijie   = (11 + sizhu[3][1]) % 12
+	# 擎羊，陀螺， 火星，铃星 ,地空，地劫
+	xp[xi["擎羊"]] = (xp[xi["禄存"]] + 1) % 12
+	xp[xi["陀螺"]] = (xp[xi["禄存"]] - 1) % 12
+	xp[xi["火星"]] = (o["火星"][sizhu[0][1]] + sizhu[3][1]) % 12
+	xp[xi["铃星"]] = (o["铃星"][sizhu[0][1]] + sizhu[3][1]) % 12
+	xp[xi["地空"]] = (11 - sizhu[3][1]) % 12
+	xp[xi["地劫"]] = (11 + sizhu[3][1]) % 12
 
 
 	# 杂耀星
 	# 天马， 红鸳， 天喜 ， 孤辰 ，寡宿, 天刑， 天姚， 天德， 年解
-	tianma  = o["天马"][sizhu[0][1]]
-	hongyuan = (3 - sizhu[0][1]) % 12	
-	tianxi  = (hongyuan + 6) % 12
+	xp[xi["天马"]]  = o["天马"][sizhu[0][1]]
+	xp[xi["红鸳"]]  = (3 - sizhu[0][1]) % 12	
+	xp[xi["天喜"]]  = (xp[xi["红鸳"]] + 6) % 12
 
 	trio_grp = ((sizhu[0][1] + 1) % 12) / 3
 	trio_grp_next = [2,5,8,11]
 	trio_grp_prev = [10,7,4,1]
-	guchen 	= trio_grp_next[trio_grp]
-	guasu 	= trio_grp_prev[trio_grp]
+	xp[xi["孤辰"]] = trio_grp_next[trio_grp]
+	xp[xi["寡宿"]] = trio_grp_prev[trio_grp]
 
-	tianxing = (9 + nongdate[:imonth])  % 12
-	tianyao  = (1 + nongdate[:imonth])  % 
-	tiande  = (9 + sizhu[0][1]) % 12
-	nianjie = (10 - sizhu[0][1]) % 12
+	xp[xi["天刑"]] = (9 + nongdate[:imonth])  % 12
+	xp[xi["天姚"]] = (1 + nongdate[:imonth])  % 
+	xp[xi["天德"]] = (9 + sizhu[0][1]) % 12
+	xp[xi["年解"]] = (10 - sizhu[0][1]) % 12
+
+
+	# 十干四化
+	sihua = o["十干四化"][ sizhu[0][0] ]
+
 
 
 	(0...12).each do |i|
@@ -215,49 +249,22 @@ def main()
 
 		
 		print "(身)" if i == shengong 
-		print "(紫薇星)" if i == ziwei 
 
-		print "(天机)" if i == tianji 
-		print "(太阳)" if i == taiyang 
-		print "(武曲)" if i == wuqu 
-		print "(天同)" if i == tiantong 
-		print "(廉贞)" if i == lianzhen 
-		
-		print "(天府)" if i == tianfu 
-		print "(太阴)" if i == taiyin 
-		print "(贪狼)" if i == tanlang 
-		print "(巨门)" if i == jumen 
-		print "(天相)" if i == tianxiang 
-		print "(天梁)" if i == tianliang
-		print "(七杀)" if i == qisha
-		print "(破军)" if i == pojun
+		xi.values.each { |xid| 
+			if xp[xid] == i
 				
-		print "(左辅)" if i == zuofu
-		print "(右弼)" if i == youbi
-		print "(文曲)" if i == wenqu
-		print "(文昌)" if i == wenchang
-		print "(天魁)" if i == tiankui
-		print "(天钺)" if i == tianyue
-		print "(禄存)" if i == lucun
+				sihua_text = ""
+				(0...4).each { |sihua_i| 
+					if xi[sihua[sihua_i]] == xid 
+						sihua_text = v["十干四化"][sihua_i]
+					end 
+				}
 
-		print "(擎羊)" if i == qingyang
-		print "(陀螺)" if i == tuoluo
-		print "(火星)" if i == huoxing
-		print "(铃星)" if i == lingxing
-		print "(地空)" if i == dikong
-		print "(地劫)" if i == dijie
-		
-		print "(天马)" if i == tianma
-		print "(红鸳)" if i == hongyuan
-		print "(天喜)" if i == tianxi
-		print "(孤辰)" if i == guchen
-		print "(寡宿)" if i == guasu
-		print "(天刑)" if i == tianxing
-		print "(天姚)" if i == tianyao
-		print "(天德)" if i == tiande
-		print "(年解)" if i == nianjie
-												
-							
+				print "[#{v["星"][xid]}#{ sihua_text.length > 0 ? "(#{sihua_text})"  : "" }] " 
+				
+			end
+		} 
+
 		puts ""
 	end
 
