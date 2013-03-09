@@ -318,7 +318,7 @@
 
 
     def to_ccal( dt ) 
-      jdt = date2jd( dt.year, dt.month , dt.day )
+      jdt = date2jd( dt.year, dt.month , dt.day + 1 )
       return calc_day( jdt );
     end 
 
