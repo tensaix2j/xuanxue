@@ -1,11 +1,11 @@
 
 
+
 require 'cdate'
 require 'goleph.rb'
 require 'time'
 
-
-
+  
 
 def main()
 
@@ -17,7 +17,7 @@ def main()
 	v["十二宫"]  = 	[ "命宫", "兄弟", "夫妻", "子女", "财帛", "疾厄", "迁移", "仆役", "官禄", "田宅", "福德", "父母"]
 	v["五行"] 	= 	[ "金","木","水","火","土"]
 	v["五行局"] 	=	[ "水二","木三","金四","土五","火六" ]
-	v["长生"]  = 	[ "长生" ,"沐浴" ,"冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝" ,"胎" ,"养"]
+	v["长生"] 	= 	[ "长生" ,"沐浴" ,"冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝" ,"胎" ,"养"]
 
 	o = {}
 	o["五虎遁"] = [ 2,4,6,8,0,2,4,6,8,0]
@@ -37,6 +37,13 @@ def main()
 
 	o["长生"] = [ 8, 11, 6, 2, 2 ]
 	o["天府"] = [ 4, 3, 2, 1, 0, 11, 10, 9 , 8 ,7 , 6, 5 ]
+
+	o["天魁"] 	= [  1,  0, 11,11, 1,0,   1,6,5,5   ]
+	o["天钺"] 	= [  7,  8,  9, 9, 7,8,   7,2,3,3   ]
+	o["禄存"] 	= [  2, 3,  5, 6 ,5,   6, 8,9, 11, 0]   
+
+	o["火星"]	= [ 2,  3,1, 9,  2, 3,1, 9,  2, 3,1, 9  ]
+	o["铃星"] 	= [ 10,10,3,10, 10,10,3,10, 10,10,3,10  ]
 
 
 	if ARGV.length < 1
@@ -74,9 +81,8 @@ def main()
 	monthoff[1] = o["五虎遁"][  (sizhu[0][0] + 1) % 10 ]
 
 	effective_monthoff = monthoff[ minggong < 2 ? 1 : 0 ]
-
-
 	wuxingju = o["五行局"][[ (effective_monthoff + minggong - 2) % 10 ,minggong] ]
+
 	
 	print v["五行局"][ wuxingju],"局"
 	puts ""
@@ -85,7 +91,10 @@ def main()
 	puts "\n\n"
 	
 
-	#紫薇星
+	# 14 主星
+	
+
+	# 紫薇 ,天机, 太阳, 武曲, 天同. 廉贞
 	x = 0
 	(0...6).each { |i|
 		if ( nongdate[:iday] + 1 + i ) % ( wuxingju + 2 ) == 0
@@ -94,17 +103,17 @@ def main()
 		end
 	}
 	y = (nongdate[:iday] + 1 + x) / ( wuxingju + 2 )
-	ziweixing = (y + 1 + x) % 12
+	ziwei = (y + 1 + x) % 12
 
-	#天机，太阳，武曲，天同，廉贞
-	tianji 		= (ziweixing - 1) % 12
-	taiyang 	= (ziweixing - 3) % 12
-	wuqu 		= (ziweixing - 4) % 12
-	tiantong 	= (ziweixing - 5) % 12
-	lianzhen	= (ziweixing - 8) % 12
+	
+	tianji 		= (ziwei - 1) % 12
+	taiyang 	= (ziwei - 3) % 12
+	wuqu 		= (ziwei - 4) % 12
+	tiantong 	= (ziwei - 5) % 12
+	lianzhen	= (ziwei - 8) % 12
 
-	#天府，太阴，贪狼， 巨门，天相，天梁， 七杀， 破军
-	tianfu 		= o["天府"][ziweixing]
+	# 天府，太阴，贪狼， 巨门，天相，天梁， 七杀， 破军
+	tianfu 		= o["天府"][ziwei]
 	taiyin		= (tianfu + 1 ) % 12
 	tanlang 	= (tianfu + 2 ) % 12
 	jumen		= (tianfu + 3 ) % 12
@@ -113,6 +122,27 @@ def main()
 	qisha		= (tianfu + 6 ) % 12
 	pojun		= (tianfu + 10 ) % 12
 
+
+	# 7 吉星
+	# 左辅， 右弼， 文曲， 文昌， 天魁， 天月， 禄存
+	zuofu = (4 + nongdate[:imonth]) % 12
+	youbi = (10 - nongdate[:imonth]) % 12
+	wenqu = (4 + sizhu[3][1] ) % 12
+	wenchang = (10 - sizhu[3][1]) % 12
+	tiankui = o["天魁"][sizhu[0][0]] 
+	tianyue = o["天钺"][sizhu[0][0]]
+	lucun = o["禄存"][sizhu[0][0]]
+
+
+
+	# 7 凶星
+	# 擎羊，陀螺， 火星，铃星 ,地空，地劫
+	qingyang = (lucun + 1) % 12
+	tuoluo   = (lucun - 1) % 12
+	huoxing  = (o["火星"][sizhu[0][1]] + sizhu[3][1]) % 12
+	lingxing  = (o["铃星"][sizhu[0][1]] + sizhu[3][1]) % 12
+	dikong  = (11 - sizhu[3][1]) % 12
+	dijie   = (11 + sizhu[3][1]) % 12
 
 
 	(0...12).each do |i|
@@ -126,7 +156,7 @@ def main()
 		print " ",v["长生"][ (i - changshen_off) % 12 ]," "
 
 		print "(身)" if i == shengong 
-		print "(紫薇星)" if i == ziweixing 
+		print "(紫薇星)" if i == ziwei 
 
 		print "(天机)" if i == tianji 
 		print "(太阳)" if i == taiyang 
@@ -143,7 +173,22 @@ def main()
 		print "(七杀)" if i == qisha
 		print "(破军)" if i == pojun
 				
-			
+		print "(左辅)" if i == zuofu
+		print "(右弼)" if i == youbi
+		print "(文曲)" if i == wenqu
+		print "(文昌)" if i == wenchang
+		print "(天魁)" if i == tiankui
+		print "(天钺)" if i == tianyue
+		print "(禄存)" if i == lucun
+
+		print "(擎羊)" if i == qingyang
+		print "(陀螺)" if i == tuoluo
+		print "(火星)" if i == huoxing
+		print "(铃星)" if i == lingxing
+		print "(地空)" if i == dikong
+		print "(地劫)" if i == dijie
+									
+							
 		puts ""
 	end
 
