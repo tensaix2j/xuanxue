@@ -124,6 +124,7 @@ def main()
 	
 
 	# 紫薇 ,天机, 太阳, 武曲, 天同. 廉贞
+
 	x = 0
 	(0...6).each { |i|
 		if ( nongdate[:iday] + 1 + i ) % ( wuxingju + 2 ) == 0
@@ -132,7 +133,12 @@ def main()
 		end
 	}
 	y = (nongdate[:iday] + 1 + x) / ( wuxingju + 2 )
-	ziwei = (y + 1 + x) % 12
+	
+	if x % 2 == 0
+		ziwei = (y + 1 + x) % 12
+	else
+		ziwei = (y + 1 - x) % 12
+	end
 
 	
 	tianji 		= (ziwei - 1) % 12
@@ -203,10 +209,11 @@ def main()
 		gan = (effective_monthoff + i - 2) % 10
 
 		print v["天干"][gan],v["地支"][i]," "
-		print v["十二宫"][ (12 - (i - minggong )) % 12]
+		print " ",v["长生"][ (i - changshen_off) % 12 ],"\t"
 
-		print " ",v["长生"][ (i - changshen_off) % 12 ]," "
+		print v["十二宫"][ (12 - (i - minggong )) % 12],"\t"
 
+		
 		print "(身)" if i == shengong 
 		print "(紫薇星)" if i == ziwei 
 
