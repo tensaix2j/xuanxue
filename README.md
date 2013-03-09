@@ -5,6 +5,14 @@
 
 编程应用在玄学研究中。。。	
 
+
+紫薇
+----
+根据: [褚凌烟－凌烟阁命理馆－紫斗教室](http://v.youku.com/v_show/id_XMjcwOTA2NDI0.html)
+	
+	Usage: ruby ziwei.rb <出生日期>
+
+	Example: ruby ziwei.rb "1985/12/21 12:24"
 	
 
 八字
@@ -26,13 +34,6 @@
 	Example: ruby liuren.rb "2012/12/23 22:25" 4
 
 
-紫薇
-----
-根据: [褚凌烟－凌烟阁命理馆－紫斗教室](http://v.youku.com/v_show/id_XMjcwOTA2NDI0.html)
-	
-	Usage: ruby ziwei.rb <出生日期>
-
-	Example: ruby ziwei.rb "1985/12/21 12:24"
 	
 
 
