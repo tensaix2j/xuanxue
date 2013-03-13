@@ -6,7 +6,7 @@
 编程应用在玄学研究中。。。	
 
 
-紫薇斗数
+紫微斗数
 -------
 根据:
 [褚凌烟－凌烟阁命理馆－紫斗教室](http://v.youku.com/v_show/id_XMjcwOTA2NDI0.html)
