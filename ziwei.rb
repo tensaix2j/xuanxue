@@ -11,7 +11,7 @@ def main()
 
 
 	if ARGV.length < 1
-		puts "Usage: ruby ziwei.rb <datetime>"
+		puts "Usage: ruby ziwei.rb <born datetime> [<today datetime>]"
 		return
 	end
 
@@ -165,20 +165,21 @@ def main()
 
 
 	nongli = CDate.new()
+	
+
+	# Born date
 	dt = DateTime.parse( ARGV[0] )
-	sizhu = nongli.bazi( dt )
-	nongdate = nongli.to_ccal( dt );
-
-	#农历
-	puts "#{ nongdate[:cmonth] }月 #{ nongdate[:cday]}"
-
-
-	#八字
-	(0...4).each { |i|
-		print "#{v["天干"][sizhu[i][0]]}#{v["地支"][sizhu[i][1]]} "
-	}
-	puts "\n"
-
+	nongdate = nongli.to_ccal( dt )
+	sizhu 		= nongli.bazi( dt )
+	
+	# Today / User selected today date
+	dt_today = ARGV[1] != nil ? DateTime.parse( ARGV[1] ) : DateTime.now() 
+	nongdate_today = nongli.to_ccal( dt_today) 
+	sizhu_today	= nongli.bazi( dt_today )
+		
+	
+	
+	
 
 	#命宫，身宫
 	minggong = (nongdate[:imonth] + 2 - sizhu[3][1])	% 12
@@ -207,6 +208,8 @@ def main()
 
 	# 紫薇 ,天机, 太阳, 武曲, 天同. 廉贞
 	xp = []
+	lrxp = []
+
 
 	x = 0
 	(0...6).each { |i|
@@ -252,6 +255,9 @@ def main()
 	xp[xi["天魁"]] = o["天魁"][sizhu[0][0]] 
 	xp[xi["天钺"]] = o["天钺"][sizhu[0][0]]
 	xp[xi["禄存"]] = o["禄存"][sizhu[0][0]]
+
+
+	
 
 
 
@@ -305,6 +311,20 @@ def main()
 	xp[xi["封诰"]] = [2,3,4,5,6,7,8,9,10,11,0,1][sizhu[3][1]]
 		
 
+
+	#------------------------
+	puts "先天盘"
+
+	#农历
+	puts "#{ nongdate[:cmonth] }月 #{ nongdate[:cday]}"
+
+	#八字
+	(0...4).each { |i|
+		print "#{v["天干"][sizhu[i][0]]}#{v["地支"][sizhu[i][1]]} "
+	}
+	puts "\n\n"
+
+
 	(0...12).each do |i|
 
 		effective_monthoff = monthoff[ i < 2 ? 1 : 0 ]
@@ -348,8 +368,59 @@ def main()
 	end
 
 
+	#-----------
+	#-流月计算
+	lyminggong = 
+
+
+	#-----------------
+	#-流日计算
+
+	# 流日 ，流年
+	lrxp[xi["天钺"]] = o["天魁"][ sizhu_today[0][0]] 
+	lrxp[xi["天魁"]] = o["天钺"][ sizhu_today[0][0]]
+	lrxp[xi["文昌"]] =  (4 + sizhu_today[3][1] ) % 12
+	lrxp[xi["文曲"]] =  (10 - sizhu_today[3][1]) % 12
+	lrxp[xi["红鸳"]]  = (3 - sizhu_today[0][1]) % 12	
+	lrxp[xi["天喜"]]  = (lrxp[xi["红鸳"]] + 6) % 12
+	lrxp[xi["禄存"]] = o["禄存"][sizhu_today[0][0]]
+	lrxp[xi["擎羊"]] = (lrxp[xi["禄存"]] + 1) % 12
+	lrxp[xi["陀螺"]] = (lrxp[xi["禄存"]] - 1) % 12
+	
+
+
+	puts "\n\n\n"
+	puts "流日盘"
+
+	#农历
+	puts "#{ nongdate_today[:cmonth] }月 #{ nongdate_today[:cday]}"
 
 	
+	(0...4).each { |i|
+		print "#{v["天干"][sizhu_today[i][0]]}#{v["地支"][sizhu_today[i][1]]} "
+	}
+	puts "\n\n"
+
+	lminggong = ( sizhu_today[0][0] + nongdate[:iday] ) % 12
+
+	
+	(0...12).each do |i|
+
+		effective_monthoff = monthoff[ i < 2 ? 1 : 0 ]
+		gan = (effective_monthoff + i - 2) % 10
+
+		print v["天干"][gan],v["地支"][i]," "
+
+		#print v["十二宫"][ (12 - (i - lminggong )) % 12],"\t"
+		
+		xi.values.each { |xid| 
+			if lrxp[xid] == i
+				print "流",v["星"][xid]," "
+			end
+		}
+
+		puts ""
+	end
 
 
 
