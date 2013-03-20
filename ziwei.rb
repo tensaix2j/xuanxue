@@ -331,14 +331,14 @@ def main()
 		gan = (effective_monthoff + i - 2) % 10
 
 		print v["天干"][gan],v["地支"][i]," "
-		print " ",v["长生"][ (i - changshen_off) % 12 ],"\t"
-
+		
 		if i == shengong 
 			print v["十二宫"][ (12 - (i - minggong )) % 12][0..2],"(身)" 
 		else	
 			print v["十二宫"][ (12 - (i - minggong )) % 12]
 		end
 		print "\t"
+		print " ",v["长生"][ (i - changshen_off) % 12 ],"\t"
 
 		
 		
@@ -368,15 +368,70 @@ def main()
 	end
 
 
+	#--------------------
+	#流年
+
+	horizontalline
+	puts "流年盘"
+	puts "#{ nongdate_today[:cmonth] }月 #{ nongdate_today[:cday]}"
+	(0...4).each { |i|
+		print "#{v["天干"][sizhu_today[i][0]]}#{v["地支"][sizhu_today[i][1]]} "
+	}
+	puts "\n\n"
+
+
+	lnminggong = sizhu_today[0][1]
+	(0...12).each do |i|
+
+		effective_monthoff = monthoff[ i < 2 ? 1 : 0 ]
+		gan =  (effective_monthoff + i - 2) % 10
+
+		print v["天干"][gan],v["地支"][i]," "
+		print v["十二宫"][ (12 - (i - lnminggong )) % 12]
+		print "\t"
+		puts ""
+	end
+
+
+
 	#-----------
 	#-流月计算
-	lyminggong = 
 
+	doujun = (lnminggong - nongdate[:imonth] + sizhu[3][1]) % 12
+	lyminggong = (nongdate_today[:imonth] + doujun) % 12
+
+	horizontalline
+	puts "流月盘"
+	puts "#{ nongdate_today[:cmonth] }月 #{ nongdate_today[:cday]}"
+	(0...4).each { |i|
+		print "#{v["天干"][sizhu_today[i][0]]}#{v["地支"][sizhu_today[i][1]]} "
+	}
+	puts "\n\n"
+	(0...12).each do |i|
+
+		effective_monthoff = monthoff[ i < 2 ? 1 : 0 ]
+		gan = (effective_monthoff + i - 2) % 10
+
+		print v["天干"][gan],v["地支"][i]," "
+
+		print v["十二宫"][ (12 - (i - lyminggong )) % 12],"\t"
+		
+		xi.values.each { |xid| 
+			if lrxp[xid] == i
+				print "流",v["星"][xid]," "
+			end
+		}
+
+		puts ""
+	end	
+
+
+	
 
 	#-----------------
 	#-流日计算
-
-	# 流日 ，流年
+	# 流日
+	
 	lrxp[xi["天钺"]] = o["天魁"][ sizhu_today[0][0]] 
 	lrxp[xi["天魁"]] = o["天钺"][ sizhu_today[0][0]]
 	lrxp[xi["文昌"]] =  (4 + sizhu_today[3][1] ) % 12
@@ -388,20 +443,16 @@ def main()
 	lrxp[xi["陀螺"]] = (lrxp[xi["禄存"]] - 1) % 12
 	
 
+	lrminggong = (lyminggong + nongdate_today[:iday])  % 12
 
-	puts "\n\n\n"
+	horizontalline
 	puts "流日盘"
-
-	#农历
 	puts "#{ nongdate_today[:cmonth] }月 #{ nongdate_today[:cday]}"
-
-	
 	(0...4).each { |i|
 		print "#{v["天干"][sizhu_today[i][0]]}#{v["地支"][sizhu_today[i][1]]} "
 	}
 	puts "\n\n"
 
-	lminggong = ( sizhu_today[0][0] + nongdate[:iday] ) % 12
 
 	
 	(0...12).each do |i|
@@ -411,7 +462,7 @@ def main()
 
 		print v["天干"][gan],v["地支"][i]," "
 
-		#print v["十二宫"][ (12 - (i - lminggong )) % 12],"\t"
+		print v["十二宫"][ (12 - (i - lrminggong )) % 12],"\t"
 		
 		xi.values.each { |xid| 
 			if lrxp[xid] == i
@@ -425,6 +476,12 @@ def main()
 
 
 
+end
+
+def horizontalline
+	puts "\n\n"
+	(0...80).each { |l| print "-" }
+	puts "\n\n"
 end
 
 main
