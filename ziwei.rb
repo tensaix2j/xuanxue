@@ -395,7 +395,7 @@ def print12gong(mg, title , nd , sz , v , monthoff , lrxp , xi , cs , o , sihua)
 
 				print v["星"][xid]
 
-				if cs != nil && xid < 36
+				if xid < 36
 					print ["陷","","平","旺"][ o["地支庙陷"][xid][i] + 1 ]
 					print sihua_text.length > 0 ? "(#{sihua_text})"  : ""
 				end
