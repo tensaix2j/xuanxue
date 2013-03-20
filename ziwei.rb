@@ -87,14 +87,13 @@ def main()
 				"左辅","右弼","文曲","文昌","天魁","天钺","禄存",			#14-20
 				"擎羊","陀螺","火星","铃星","地空","地劫",					#21-26
 				"天马","红鸳","天喜","孤辰","寡宿","天刑","天姚","天德","年解", #27-35
-				"天官","天福","天厨","截路","空亡","解神","天巫","天月","阴煞","台辅","封诰" #36-46
+				"天官","天福","天厨","截路","空亡","解神","天巫","天月","阴煞","台辅","封诰", #36-46
+				"流昌","流曲","流魁","流钺","流禄","流羊","流陀","流鸳","流喜"  #47-55
 			]
 
 	xi = {}
-	xing_id = 0
-	v["星"].each { |name| 
-		xi[name] = xing_id
-		xing_id += 1
+	v["星"].each_index { |i| 
+		xi[v["星"][i]] = i
 	}
 
 	v["十干四化"] = [ "禄","权","科","忌"]
@@ -314,35 +313,40 @@ def main()
 	#--------------------
 	# 流年
 	lnminggong = sizhu_today[0][1]
-	print12gong( lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , nil, xi , nil, o, sihua)
+	print12gong( lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua)
 
 	#-----------
 	#-流月
 	doujun = (lnminggong - nongdate[:imonth] + sizhu[3][1]) % 12
 	lyminggong = (nongdate_today[:imonth] + doujun) % 12
-	print12gong( lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , nil, xi , nil, o, sihua)
+	print12gong( lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua)
 
 	#-----------------
 	# 流日
 	
-	lrxp[xi["天钺"]] = o["天魁"][ sizhu_today[0][0]] 
-	lrxp[xi["天魁"]] = o["天钺"][ sizhu_today[0][0]]
-	lrxp[xi["文昌"]] = (4 + sizhu_today[3][1] ) % 12
-	lrxp[xi["文曲"]] = (10 - sizhu_today[3][1]) % 12
-	lrxp[xi["红鸳"]] = (3 - sizhu_today[0][1]) % 12	
-	lrxp[xi["天喜"]] = (lrxp[xi["红鸳"]] + 6) % 12
-	lrxp[xi["禄存"]] = o["禄存"][sizhu_today[0][0]]
-	lrxp[xi["擎羊"]] = (lrxp[xi["禄存"]] + 1) % 12
-	lrxp[xi["陀螺"]] = (lrxp[xi["禄存"]] - 1) % 12
 	
+	xp[xi["流昌"]] = (5 + nongdate_today[:iday] ) % 12
+	xp[xi["流曲"]] = (9 - nongdate_today[:iday] ) % 12
+	
+	xp[xi["流钺"]] = o["天魁"][ sizhu_today[0][0]] 
+	xp[xi["流魁"]] = o["天钺"][ sizhu_today[0][0]]
+
+	xp[xi["流鸳"]] = (3 - sizhu_today[0][1]) % 12	
+	xp[xi["流喜"]] = (xp[xi["流鸳"]] + 6) % 12
+	xp[xi["流禄"]] = o["禄存"][sizhu_today[0][0]]
+	xp[xi["流羊"]] = (xp[xi["流禄"]] + 1) % 12
+	xp[xi["流陀"]] = (xp[xi["流禄"]] - 1) % 12
+	
+
 	lrminggong = (lyminggong + nongdate_today[:iday])  % 12
-	print12gong( lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , lrxp , xi , nil, o, sihua)
+	print12gong( lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua)
 
 
 	#--------------------
 	#流时
+
 	lsminggong = ( lrminggong + sizhu_today[3][1] ) % 12
-	print12gong( lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , nil , xi , nil, o, sihua)
+	print12gong( lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , xp , xi , nil, o, sihua)
 
 
 
@@ -389,7 +393,6 @@ def print12gong(mg, title , nd , sz , v , monthoff , lrxp , xi , cs , o , sihua)
 					end 
 				}
 
-				print "流" if cs == nil
 				print v["星"][xid]
 
 				if cs != nil && xid < 36
