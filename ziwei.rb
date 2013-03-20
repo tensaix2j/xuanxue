@@ -352,7 +352,7 @@ end
 #-----------------------
 def horizontalline
 	puts "\n\n"
-	(0...80).each { |l| print "-" }
+	print "-" * 80
 	puts "\n\n"
 end
 
