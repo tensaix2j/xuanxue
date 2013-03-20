@@ -476,6 +476,34 @@ def main()
 
 
 
+	#--------------------
+	#流时
+
+	horizontalline
+	puts "流时盘"
+	puts "#{ nongdate_today[:cmonth] }月 #{ nongdate_today[:cday]}"
+	(0...4).each { |i|
+		print "#{v["天干"][sizhu_today[i][0]]}#{v["地支"][sizhu_today[i][1]]} "
+	}
+	puts "\n\n"
+
+
+	lsminggong = ( lrminggong + sizhu_today[3][1] ) % 12
+	(0...12).each do |i|
+
+		effective_monthoff = monthoff[ i < 2 ? 1 : 0 ]
+		gan =  (effective_monthoff + i - 2) % 10
+
+		print v["天干"][gan],v["地支"][i]," "
+		print v["十二宫"][ (12 - (i - lsminggong )) % 12]
+		print "\t"
+		puts ""
+	end
+
+
+
+
+
 end
 
 def horizontalline
