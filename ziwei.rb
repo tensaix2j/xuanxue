@@ -101,7 +101,7 @@ def main()
 	o["天钺"] 	= [  7,  8,  9, 9, 7,8,   7,2,3,3   ]
 	o["禄存"] 	= [  2, 3,  5, 6 ,5,   6, 8,9, 11, 0]   
 	
-	
+
 
 	v["十干四化"] = [ "禄","权","科","忌"]
 	o["十干四化"] = [
@@ -338,25 +338,32 @@ def main()
 	xp[xi["旬空"]] = [ 10, 10, 0, 0 ,2, 2, 4, 4,6, 6,8,8 ] [ (sizhu[0][1] - sizhu[0][0]) % 12 ]
 	
 
-	# 十干四化
-	sihua = o["十干四化"][ sizhu[0][0] ]
+	
+
 
 
 	#------------------------
 	#先天盘
+	sihua 			= o["十干四化"][ sizhu[0][0] ]
 	print12gong( minggong , "先天盘" , nongdate , sizhu , v , monthoff , xp, xi , changshen_off, o, sihua)
 
 
 	#--------------------
 	# 流年
-	lnminggong = sizhu_today[0][1]
-	print12gong( lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua)
+	lnminggong 		= sizhu_today[0][1]
+	sihua_ln 		= o["十干四化"][ sizhu_today[0][0] ]
+
+	print12gong( lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ln)
+
 
 	#-----------
 	#-流月
 	doujun = (lnminggong - nongdate[:imonth] + sizhu[3][1]) % 12
 	lyminggong = (nongdate_today[:imonth] + doujun) % 12
-	print12gong( lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua)
+	sihua_ly 		= o["十干四化"][ sizhu_today[1][0] ]
+	
+
+	print12gong( lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ly)
 
 	#-----------------
 	# 流日
@@ -374,16 +381,17 @@ def main()
 	xp[xi["流羊"]] = (xp[xi["流禄"]] + 1) % 12
 	xp[xi["流陀"]] = (xp[xi["流禄"]] - 1) % 12
 	
-
+	sihua_lr = o["十干四化"][ sizhu_today[2][0] ]
 	lrminggong = (lyminggong + nongdate_today[:iday])  % 12
-	print12gong( lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua)
+	print12gong( lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_lr)
 
 
 	#--------------------
 	#流时
 
 	lsminggong = ( lrminggong + sizhu_today[3][1] ) % 12
-	print12gong( lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , xp , xi , nil, o, sihua)
+	sihua_ls = o["十干四化"][ sizhu_today[3][0] ]
+	print12gong( lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , xp , xi , nil, o, sihua_ls)
 
 
 
