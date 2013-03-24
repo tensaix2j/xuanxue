@@ -9,8 +9,9 @@
 紫微斗数
 -------
 根据:
+[紫微斗数命盘排法](http://www.freehoro.net/PHP-ZWDS_GB/Tutorial/PaiPan/index.php)
 [褚凌烟－凌烟阁命理馆－紫斗教室](http://v.youku.com/v_show/id_XMjcwOTA2NDI0.html)
-[紫微斗数入门](http://www.zhycw.com/art/n622c9.aspx)
+
 	
 	Usage: ruby ziwei.rb <出生日期>
 	Example: ruby ziwei.rb "1985/12/21 12:24"

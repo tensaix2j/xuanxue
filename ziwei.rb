@@ -11,7 +11,7 @@ def main()
 
 
 	if ARGV.length < 1
-		puts "Usage: ruby ziwei.rb <born datetime> [<today datetime>]"
+		puts "Usage: ruby ziwei.rb <born datetime> [<today datetime>] [<m|f>]"
 		return
 	end
 
@@ -26,6 +26,7 @@ def main()
 	v["五行"] 	= 	[ "金","木","水","火","土"]
 	v["五行局"] 	=	[ "水二","木三","金四","土五","火六" ]
 	v["长生"] 	= 	[ "长生" ,"沐浴" ,"冠带", "临官", "帝旺", "衰", "病", "死", "墓", "绝" ,"胎" ,"养"]
+
 
 	o = {}
 	o["五虎遁"] = [ 2,4,6,8,0,2,4,6,8,0]
@@ -182,6 +183,10 @@ def main()
 	dt_today = ARGV[1] != nil ? DateTime.parse( ARGV[1] ) : DateTime.now() 
 	nongdate_today = nongli.to_ccal( dt_today) 
 	sizhu_today	= nongli.bazi( dt_today )
+
+	# Gender
+	gender = ARGV[2] != nil ? ["f","m"].index(ARGV[2]) : 1
+
 	
 	# 命宫，身宫	
 	minggong = (nongdate[:imonth] + 2 - sizhu[3][1])	% 12
@@ -196,12 +201,8 @@ def main()
 	effective_monthoff = monthoff[ minggong < 2 ? 1 : 0 ]
 	wuxingju = o["五行局"][[ (effective_monthoff + minggong - 2) % 10 ,minggong] ]
 
-	print v["五行局"][ wuxingju],"局"
-	puts ""
-
-	changshen_off = o["长生"][wuxingju]
-	puts "\n\n"
 	
+
 
 	# 14 主星
 	# 紫薇 ,天机, 太阳, 武曲, 天同. 廉贞
@@ -340,12 +341,39 @@ def main()
 
 	
 
+	#--------------
+	# General info
+	age = (dt_today.year - dt.year + 1  )
 
+	puts ""
+	print 	["阳","阴"][sizhu[0][0] % 2 ],["女","男"][gender],"\n"
+	printf 	"%d岁\n", age
+	print 	v["五行局"][ wuxingju],"局","\n"
+	print 	"命宫:",v["地支"][minggong],"\n"
+	print 	"身宫:",v["地支"][shengong],"\n"
+	
+	changshen_off = o["长生"][wuxingju]
+	
 
 	#------------------------
 	#先天盘
 	sihua 			= o["十干四化"][ sizhu[0][0] ]
-	print12gong( minggong , "先天盘" , nongdate , sizhu , v , monthoff , xp, xi , changshen_off, o, sihua)
+	print12gong( wuxingju, minggong , "先天盘" , nongdate , sizhu , v , monthoff , xp, xi , changshen_off, o, sihua)
+
+	#--------------------
+	# 大限盘
+	if ( age >= wuxingju + 2 )
+			
+		dx_gong_offset 	= (age - wuxingju - 2) / 10 
+		dx_gong 		= minggong + dx_gong_offset
+
+		effective_monthoff = monthoff[ dx_gong < 2 ? 1 : 0 ]
+		dx_gan =  (effective_monthoff + dx_gong - 2) % 10
+
+		sihua_dx 		= o["十干四化"][ dx_gan ]
+		print12gong( wuxingju, dx_gong , "大限盘" , nongdate_today , sizhu_today , v , monthoff , xp, xi , nil, o, sihua_dx)
+		
+	end
 
 
 	#--------------------
@@ -353,7 +381,7 @@ def main()
 	lnminggong 		= sizhu_today[0][1]
 	sihua_ln 		= o["十干四化"][ sizhu_today[0][0] ]
 
-	print12gong( lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ln)
+	print12gong( wuxingju, lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ln)
 
 
 	#-----------
@@ -363,7 +391,7 @@ def main()
 	sihua_ly 		= o["十干四化"][ sizhu_today[1][0] ]
 	
 
-	print12gong( lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ly)
+	print12gong( wuxingju, lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ly)
 
 	#-----------------
 	# 流日
@@ -383,7 +411,7 @@ def main()
 	
 	sihua_lr = o["十干四化"][ sizhu_today[2][0] ]
 	lrminggong = (lyminggong + nongdate_today[:iday])  % 12
-	print12gong( lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_lr)
+	print12gong( wuxingju, lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_lr)
 
 
 	#--------------------
@@ -391,7 +419,7 @@ def main()
 
 	lsminggong = ( lrminggong + sizhu_today[3][1] ) % 12
 	sihua_ls = o["十干四化"][ sizhu_today[3][0] ]
-	print12gong( lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , xp , xi , nil, o, sihua_ls)
+	print12gong( wuxingju, lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , xp , xi , nil, o, sihua_ls)
 
 
 
@@ -406,7 +434,7 @@ def horizontalline
 end
 
 #-----------------------
-def print12gong(mg, title , nd , sz , v , monthoff , lrxp , xi , cs , o , sihua)
+def print12gong( wuxingju, mg, title , nd , sz , v , monthoff , lrxp , xi , cs , o , sihua )
 
 	horizontalline
 	puts title
@@ -423,9 +451,13 @@ def print12gong(mg, title , nd , sz , v , monthoff , lrxp , xi , cs , o , sihua)
 		print v["天干"][gan],v["地支"][i]," "
 		print v["十二宫"][ (12 - (i - mg )) % 12]
 		print "\t"
-
 		print " ",v["长生"][ (i - cs) % 12 ],"\t" if cs != nil
 
+		if title == "先天盘"
+			agebegin = ((i - mg) % 12) * 10 + (wuxingju + 2)
+			printf "%d-%d", agebegin,agebegin + 10 - 1
+			print "\t"
+		end
 
 		xi.values.each { |xid| 
 			
