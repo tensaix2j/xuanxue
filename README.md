@@ -13,7 +13,7 @@
 [褚凌烟－凌烟阁命理馆－紫斗教室](http://v.youku.com/v_show/id_XMjcwOTA2NDI0.html)
 
 	
-	Usage: ruby ziwei.rb <出生日期> <流日日期> <性别 m|f>
+	Usage: ruby ziwei.rb <出生日期> [<流日日期> <性别 m|f>]
 	Example: ruby ziwei.rb "1988/07/25 16:40"
 	
 	Sample output:
