@@ -397,8 +397,8 @@ def main()
 	# 流日
 	
 	
-	xp[xi["流昌"]] = (5 + nongdate_today[:iday] ) % 12
-	xp[xi["流曲"]] = (9 - nongdate_today[:iday] ) % 12
+	xp[xi["流昌"]] = (5 + sizhu_today[2][0] ) % 12
+	xp[xi["流曲"]] = (9 - sizhu_today[2][0] ) % 12
 	
 	xp[xi["流钺"]] = o["天魁"][ sizhu_today[0][0]] 
 	xp[xi["流魁"]] = o["天钺"][ sizhu_today[0][0]]
