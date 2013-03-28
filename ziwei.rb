@@ -77,18 +77,19 @@ def main()
 
 
 	v["星"] = [ 
-				"紫微","天机","太阳","武曲","天同","廉贞",   				#0-5
-				"天府","太阴","贪狼","巨门","天相","天梁","七杀","破军",		#6-13
-				"左辅","右弼","文曲","文昌","天魁","天钺","禄存",			#14-20
-				"擎羊","陀螺","火星","铃星","地空","地劫",					#21-26
-				"天马","红鸳","天喜","孤辰","寡宿","天刑","天姚","年解", #27-34
-				"天官","天福","天厨","截路","空亡","解神","天巫","天月","阴煞","台辅","封诰", #35-45
-				"流昌","流曲","流魁","流钺","流禄","流羊","流陀","流鸳","流喜",  #46-54
-				"天才","天寿","华盖","天空","天哭","天虚","咸池","龙池","凤阁","蜚廉","破碎",  #55-65
-				"三台","八座","恩光","天贵",  #66-69
-				"天殇","天使",   #70-71
-				"岁建","晦气","丧门","贯索","官符","小耗","大耗","龙德","白虎","天德","吊客","病符", #72-83 
-				"旬空"	#84
+				"紫微","天机","太阳","武曲","天同","廉贞",   				
+				"天府","太阴","贪狼","巨门","天相","天梁","七杀","破军",		
+				"左辅","右弼","文曲","文昌","天魁","天钺","禄存",			
+				"擎羊","陀螺","火星","铃星","地空","地劫",					
+				"天马","红鸳","天喜","孤辰","寡宿","天刑","天姚","年解", 	
+				"天官","天福","天厨","截路","空亡","解神","天巫","天月","阴煞","台辅","封诰", 
+				"天才","天寿","华盖","天空","天哭","天虚","咸池","龙池","凤阁","蜚廉","破碎",  
+				"三台","八座","恩光","天贵", 
+				"天殇","天使",  
+				"岁建","晦气","丧门","贯索","官符","小耗","大耗","龙德","白虎","天德","吊客","病符", 
+				"旬空",
+				"流昌","流曲","流魁","流钺","流禄","流羊","流陀","流鸳","流喜",
+				"运昌","运曲","运魁","运钺","运禄","运羊","运陀" 
 			]
 
 
@@ -358,10 +359,12 @@ def main()
 	#------------------------
 	#先天盘
 	sihua 			= o["十干四化"][ sizhu[0][0] ]
-	print12gong( wuxingju, minggong , "先天盘" , nongdate , sizhu , v , monthoff , xp, xi , changshen_off, o, sihua)
+	print12gong( wuxingju, minggong , "先天盘" , nongdate , sizhu , v , monthoff , xp, xi , changshen_off, o, sihua , 0)
 
 	#--------------------
 	# 大限盘
+
+
 	if ( age >= wuxingju + 2 )
 			
 		dx_gong_offset 	= (age - wuxingju - 2) / 10 
@@ -370,18 +373,36 @@ def main()
 		effective_monthoff = monthoff[ dx_gong < 2 ? 1 : 0 ]
 		dx_gan =  (effective_monthoff + dx_gong - 2) % 10
 
-		sihua_dx 		= o["十干四化"][ dx_gan ]
-		print12gong( wuxingju, dx_gong , "大限盘" , nongdate_today , sizhu_today , v , monthoff , xp, xi , nil, o, sihua_dx)
+		xp[xi["运昌"]] = (10 - dx_gong ) % 12
+		xp[xi["运曲"]] = (4  + dx_gong ) % 12
+		xp[xi["运钺"]] = o["天钺"][ dx_gan ] 
+		xp[xi["运魁"]] = o["天魁"][ dx_gan ]
+		xp[xi["运禄"]] = o["禄存"][ dx_gan ]
+		xp[xi["运羊"]] = (xp[xi["运禄"]] + 1) % 12
+		xp[xi["运陀"]] = (xp[xi["运禄"]] - 1) % 12
+
 		
+		sihua_dx 		= o["十干四化"][ dx_gan ]
+		print12gong( wuxingju, dx_gong , "大限盘" , nongdate_today , sizhu_today , v , monthoff , xp, xi , nil, o, sihua_dx , dx_gong_offset)
+		
+		(xi["运昌"]..xi["运陀"]).each { 
+			|x_id|
+			xp[x_id] = nil
+		}
+		
+
 	end
 
 
 	#--------------------
 	# 流年
+
+	
+
 	lnminggong 		= sizhu_today[0][1]
 	sihua_ln 		= o["十干四化"][ sizhu_today[0][0] ]
 
-	print12gong( wuxingju, lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ln)
+	print12gong( wuxingju, lnminggong , "流年盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ln , lnminggong - minggong )
 
 
 	#-----------
@@ -391,7 +412,7 @@ def main()
 	sihua_ly 		= o["十干四化"][ sizhu_today[1][0] ]
 	
 
-	print12gong( wuxingju, lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ly)
+	print12gong( wuxingju, lyminggong , "流月盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_ly , lyminggong - minggong )
 
 	#-----------------
 	# 流日
@@ -411,7 +432,7 @@ def main()
 	
 	sihua_lr = o["十干四化"][ sizhu_today[2][0] ]
 	lrminggong = (lyminggong + nongdate_today[:iday])  % 12
-	print12gong( wuxingju, lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_lr)
+	print12gong( wuxingju, lrminggong , "流日盘" , nongdate_today , sizhu_today , v , monthoff , xp , xi , nil, o, sihua_lr , lrminggong - minggong )
 
 
 	#--------------------
@@ -419,7 +440,7 @@ def main()
 
 	lsminggong = ( lrminggong + sizhu_today[3][1] ) % 12
 	sihua_ls = o["十干四化"][ sizhu_today[3][0] ]
-	print12gong( wuxingju, lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , xp , xi , nil, o, sihua_ls)
+	print12gong( wuxingju, lsminggong , "流时盘" , nongdate_today , sizhu_today , v , monthoff  , xp , xi , nil, o, sihua_ls , lsminggong - minggong )
 
 
 
@@ -434,9 +455,11 @@ def horizontalline
 end
 
 #-----------------------
-def print12gong( wuxingju, mg, title , nd , sz , v , monthoff , lrxp , xi , cs , o , sihua )
+def print12gong( wuxingju, mg, title , nd , sz , v , monthoff , lrxp , xi , cs , o , sihua , dizhi_offset )
+
 
 	horizontalline
+	
 	puts title
 	puts "#{ nd[:cmonth] }月 #{ nd[:cday]}"
 	(0...4).each { |i|
@@ -473,7 +496,7 @@ def print12gong( wuxingju, mg, title , nd , sz , v , monthoff , lrxp , xi , cs ,
 				print v["星"][xid]
 
 				if xid < 36
-					print ["陷","","平","旺"][ o["地支庙陷"][xid][i] + 1 ]
+					print ["陷","","平","旺"][ o["地支庙陷"][xid][ (i + dizhi_offset) % 12 ] + 1 ]
 					print sihua_text.length > 0 ? "(#{sihua_text})"  : ""
 				end
 				print "  " 
