@@ -1,4 +1,5 @@
-  
+#encoding: utf-8 
+ 
   # Copyright (C) 2010 oCameLo. All rights reserved.
   
   # coding: UTF-8

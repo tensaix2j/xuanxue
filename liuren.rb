@@ -1,9 +1,9 @@
+#encoding: utf-8
 
 
 
-
-require 'cdate'
-require 'goleph.rb'
+require_relative 'cdate'
+require_relative 'goleph.rb'
 require 'time'
 
 
@@ -20,7 +20,10 @@ def main(  )
 	o["贵神夜"] 	= [  7,  8,  9, 9, 7,8,   7,2,3,3   ]
 	o["人元"]    = [ 0, 2,4 ,6 ,8 , 0,2 ,4 ,6 ,8 ]
 
-	return if ( ARGV.length < 2 ) 
+	if ( ARGV.length < 2 ) 
+		puts "Usage <date time now> <a random number>"
+		return 
+	end
 
 
 	nongli = CDate.new()

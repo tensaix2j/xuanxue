@@ -1,9 +1,10 @@
+#encoding: utf-8
 
 
-
-require 'cdate'
-require 'goleph.rb'
+require_relative 'cdate'
+require_relative 'goleph.rb'
 require 'time'
+
 
   
 
