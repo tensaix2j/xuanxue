@@ -280,7 +280,9 @@
       # 节气
       i = ((jd - dat[:zq][0] - 7)/15.2184).floor
       i += 1 if i < 23 && jd >= dat[:zq][i+1]
-      d[:term] = jd == dat[:zq][i] ? @terms[i] : ''
+
+      #d[:term] = jd == dat[:zq][i] ? @terms[i] : ''
+      d[:term] = @terms[i]
 
       # 星座
       # 好吧，农历也弄这个蛮无聊的其实
