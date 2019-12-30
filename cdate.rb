@@ -159,6 +159,26 @@
       return (365.25*(year+4716)).floor + (30.6001*(month+1)).floor + day + b - 1524.5
     end
 
+
+
+     # 根据公历算儒略日数
+    def date2jd2(year, month, day, hour)
+      raise ArgumentError, 'year cannot be less than -4712' if year < -4712
+
+      if month <= 2 then
+        year -= 1; month += 12
+      end
+
+      b = if year < 1582 or (year == 1582 and month < 10) or (year == 1582 and month == 10 and day <= 4) then
+        0
+      else
+        a = (year/100.0).floor
+        2 - a + (a/4.0).floor
+      end
+
+      return (365.25*(year+4716)).floor + (30.6001*(month+1)).floor + day + b - 1524.5 + hour / 24.0
+    end
+
     
 
     # 设置语言环境
@@ -281,8 +301,7 @@
       i = ((jd - dat[:zq][0] - 7)/15.2184).floor
       i += 1 if i < 23 && jd >= dat[:zq][i+1]
 
-      #d[:term] = jd == dat[:zq][i] ? @terms[i] : ''
-      d[:term] = @terms[i]
+      d[:term] = jd == dat[:zq][i] ? @terms[i] : ''
 
       # 星座
       # 好吧，农历也弄这个蛮无聊的其实
@@ -324,6 +343,86 @@
       jdt = date2jd( dt.year, dt.month , dt.day + 1 )
       return calc_day( jdt );
     end 
+
+
+
+
+
+
+
+
+
+
+
+
+    def calc_day2(jd)
+      
+      dat = calc_year(jd)
+      jd -= CCal::GolEph::J2000 # 底层代码以2k年起算
+      d = {}
+
+
+      # 干支纪年、生肖
+      i = dat[:cd0]
+      i -= 365 if jd < i
+      i += 5810 ## 计算该年春节与1984年平均春节(立春附近)相差天数估计
+      i = (i/365.2422+0.5).floor ## 农历纪年(10进制,1984年起算)
+      i += 9000
+      # .Net的ChineseLunisolarCalendar类里边
+      # 天干翻做Celestial Stem，地支翻作Terrestrial Branch
+      d[:stem] = @stems[i%10]
+      i = i%12; d[:branch] = @branches[i]; d[:animal] = @animals[i]
+
+      # 干支纪月
+      ## 1998年12月7(大雪)开始连续进行节气计数,0为甲子
+      i = ((jd-dat[:zq][0])/ 30.43685).floor
+      ## 相对大雪的月数计算,mk的取值范围0-12
+      i += 1 if i<12 && jd>=dat[:zq][2*i+1]
+      ## 相对于1998年12月7(大雪)的月数,900000为正数基数
+      i = i + ((dat[:zq][12]+390)/365.2422).floor * 12 + 900000;
+      d[:stem_m] = @stems[i%10]; d[:branch_m] = @branches[i%12]
+
+      # 干支纪日
+      ## 2000年1月7日起算
+      i = jd - 6 + 9000000
+      d[:stem_d] = @stems[i%10]; d[:branch_d] = @branches[i%12]
+
+      # 月
+      i = ((jd - dat[:hs][0])/30).floor
+      i += 1 if i<13 && dat[:hs][i+1]<=jd
+      d[:cmleap] = dat[:leap] == i ? true : false # 是否闰月
+      d[:cmdays] = dat[:dx][i] # 该月多少天，判断大小月
+      d[:cmonth] = @months[dat[:ym][i]]
+
+      d[:imonth] = (dat[:ym][i] - 2) % 12
+      d[:iday] = (jd - dat[:hs][i]).floor()
+
+      # 日
+      d[:cday] = @days[jd - dat[:hs][i]]
+
+      # 节气
+      i = ((jd - dat[:zq][0] - 7)/15.2184).floor
+      i += 1 if i < 23 && jd >= dat[:zq][i+1]
+
+      #d[:term] = jd == dat[:zq][i] ? @terms[i] : ''
+      d[:term] = @terms[i]
+
+      # 星座
+      # 好吧，农历也弄这个蛮无聊的其实
+      i = ((jd - dat[:zq][0] - 15)/30.43685).floor
+      i += 1 if i<11 && jd>=dat[:zq][2*i+2]
+      d[:astrology] = @astrologies[i%12]
+
+      return d
+    end
+
+
+    def to_ccal2( dt )
+      jdt = date2jd2( dt.year, dt.month , dt.day , dt.hour )
+      return calc_day2( jdt );
+    end 
+
+
 
 
     # 时区到经度的对应值
