@@ -45,12 +45,14 @@ def main()
 	#    w.r.t  天干 index
 	v["三奇六仪"] = [ 4,5,6,7,8,9 , 3,2,1 ]
 
+	# 阳遁
 	#上　　　　　中　　　　　下
 	#冬至一七四　小寒二八五　大寒三九六
 	#立春八五二　雨水九六三　惊蛰一七四
 	#春分三九六　清明四一七　谷雨五二八	
 	#立夏四一七　小满五二八　芒种六三九
 
+	# 阴遁
 	#上　　　　　中　　　　　下
 	#夏至九三六　小暑八二五　大暑七一四
 	#立秋二五八　处暑一四七　白露九三六
@@ -70,7 +72,21 @@ def main()
 
 	v["宫"] = [ "", "坎","坤","震", "巽","中","乾","兑","艮","离" ] 		    
 
-	
+	# 4 9 2
+	# 3 5 7
+	# 8 1 6
+	#			    0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+	v["宫顺时"] =  [ 0, 8, 7, 4, 9, 2, 1, 6, 3, 2 ]
+	v["宫逆时"] =  [ 0, 6, 9, 8, 3, 2, 7, 2, 1, 4 ]
+
+
+	#			        0,     1,     2,      3,       4,   5,     6,      7,      8,      9
+	v["九星"]     =  [ "" ,"天蓬", "芮禽", "天冲",   "天辅", "", "天心" ,"天柱", "天任" , "天英" ]
+	v["八神"]     =  [ "直符", "腾蛇", "太阴" ,"六合", "白虎" ,"玄武" ,"九地" ,"九天" ]
+	v["八门"]     =  [ "" ,   "休门",  "死门" ,   "伤门"  ,  "杜门" ,"",  "开门",    "惊门",  "生门" , "景门"]
+
+					# [ "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+	v["地支宫位"]  =  [   1 ,   8 ,   8 ,   3 ,   4,   4,    9  ,  2,    2,    7 ,   6,   6 ]
 
 	nongli = CDate.new()
 
@@ -101,19 +117,81 @@ def main()
 
 	dipan = []
 	(0...9).each { |i|
-		dipan[ (((ju - 1) + i ) % 9 ) + 1 ] = v["三奇六仪"][i]
+		if yangyindun == 0
+			dipan[ (((ju - 1) + i ) % 9 ) + 1 ] = v["三奇六仪"][i]
+		else
+			dipan[ (((ju - 1) - i ) % 9 ) + 1 ] = v["三奇六仪"][i]
+		end
 	}
 
+	
 	# 3. # 2. 天盘 口诀： 符首定在地盘时干上。
-	tianpan = [0,0,0,0,0,0,0,0,0,0]
+	tianpan = [0]
 	fushou  = ((( (sizhu[3][0] - sizhu[3][1]) % 12 ) / 2 ) + 4 ) % 10
+	zhishi  = 
 
-
-
+	d_start = t_start = 0
 	(1..9).each { |i|
-		if dipan[i] == sizhu[3][0]
-			tianpan[i] = fushou
+		# i is gong index
+		
+		if dipan[i] == fushou
+			d_start = i
+			t_start = i if sizhu[3][0] == 0
 		end	
+		if dipan[i] == sizhu[3][0]
+			t_start = i
+			tianpan[i] = fushou
+		end
+	}
+
+
+
+
+
+	t_i = v["宫顺时"][t_start]
+	d_i = v["宫顺时"][d_start]
+	
+	(0...8).each { |i|
+		tianpan[ t_i ] = dipan[d_i]
+		d_i = v["宫顺时"][d_i]
+		t_i = v["宫顺时"][t_i]
+	}
+
+
+	#4. 安九星： 值符随时干走
+	jiuxing = [0]*9
+	jiuxing[t_start] = d_start
+
+
+	
+	bashen  = [0]*9
+	bashen[t_start] =  0
+
+
+	# 5. 八门根据 值使 + 时支
+	t2_start = v["地支宫位"][ sizhu[3][1] ]
+	bamen = [0] * 9
+	bamen[t2_start] = d_start
+
+	t_i 	= v["宫顺时"][t_start]
+	t_i_rev = v["宫逆时"][t_start]
+	t2_i    = v["宫顺时"][t2_start]
+
+	xing_i = d_start
+
+
+	(1..7).each { |i|
+		xing_i = v["宫顺时"][xing_i]
+		jiuxing[t_i] = xing_i
+		bamen[t2_i]  = xing_i
+		if yangyindun == 0
+			bashen[t_i]  = i
+		else 
+			bashen[t_i_rev] = i
+		end
+		t_i 	= v["宫顺时"][t_i]
+		t_i_rev = v["宫逆时"][t_i_rev]
+		t2_i 	= v["宫顺时"][t2_i]		
 	}
 
 
@@ -123,12 +201,19 @@ def main()
 
 
 
-	# Print bazi first
+
+	# Printing...
+
+	# Print Bazi
 	(0...4).each { |i|
-		print "#{v["天干"][sizhu[i][0]]}#{v["地支"][sizhu[i][1]]}  "
+		print "#{v["天干"][sizhu[i][0]]}#{v["地支"][sizhu[i][1]]} "
 	}
+
+	# Print relevant infos
 	printf "\n"
-	printf "符首 %s\n" , v["天干"][fushou]
+	printf "%s%s局 \n" , ["阳","阴"][yangyindun] , ju
+	printf "节气: %s, 符首: %s , 值符: %s, 值使: %s\n" , subject_jieqi, v["天干"][fushou] , v["九星"][d_start],v["八门"][d_start]
+		
 	puts "\n\n"
 
 
@@ -136,21 +221,32 @@ def main()
 
 	printf "          %s|            %s|          %s\n" , v["天干"][tianpan[4]], v["天干"][tianpan[9]], v["天干"][tianpan[2]] 
 	printf "          %s|            %s|          %s\n" , v["天干"][dipan[4]]  , v["天干"][dipan[9]]  , v["天干"][dipan[2]] 
-	printf "            |              |            \n"
-	printf "            |              |            \n"
+	printf "%s        |%s          |%s        \n" 		, v["九星"][jiuxing[4]], v["九星"][jiuxing[9]], v["九星"][jiuxing[2]]
+	printf "%s        |%s          |%s        \n" 		, v["八神"][bashen[4]], v["八神"][bashen[9]], v["八神"][bashen[2]]
+	printf "%s        |%s          |%s        \n" 		, v["八门"][bamen[4]], v["八门"][bamen[9]], v["八门"][bamen[2]]
 	printf "            |              |            \n"
 	printf "%s          |%s            |%s          \n" , v["宫"][4],v["宫"][9],v["宫"][2]
+	
+
 	printf "----------------------------------------\n"
-	printf "          %s|            %s|          %s\n" , v["天干"][tianpan[3]], v["天干"][tianpan[5]], v["天干"][tianpan[7]] 
+	printf "          %s|              |          %s\n" , v["天干"][tianpan[3]],   v["天干"][tianpan[7]] 
 	printf "          %s|            %s|          %s\n" , v["天干"][dipan[3]]  , v["天干"][dipan[5]]  , v["天干"][dipan[7]] 
+	printf "%s        |              |%s        \n" 		, v["九星"][jiuxing[3]],   v["九星"][jiuxing[7]]
+	printf "%s        |              |%s        \n" 		, v["八神"][bashen[3]],   v["八神"][bashen[7]]
+	printf "%s        |              |%s        \n" 		, v["八门"][bamen[3]],   v["八门"][bamen[7]]
 	printf "            |              |            \n"
 	printf "            |              |            \n"
 	printf "            |              |            \n"
 	printf "%s          |%s            |%s          \n" , v["宫"][3],v["宫"][5],v["宫"][7]
+	
+
 	printf "----------------------------------------\n"
+	
 	printf "          %s|            %s|          %s\n" , v["天干"][tianpan[8]], v["天干"][tianpan[1]], v["天干"][tianpan[6]] 
 	printf "          %s|            %s|          %s\n" , v["天干"][dipan[8]]  , v["天干"][dipan[1]]  , v["天干"][dipan[6]] 
-	printf "            |              |            \n"
+	printf "%s        |%s          |%s        \n" 		, v["九星"][jiuxing[8]], v["九星"][jiuxing[1]], v["九星"][jiuxing[6]]
+	printf "%s        |%s          |%s        \n" 		, v["八神"][bashen[8]], v["八神"][bashen[1]],   v["八神"][bashen[6]]
+	printf "%s        |%s          |%s        \n" 		, v["八门"][bamen[8]],  v["八门"][bamen[1]],    v["八门"][bamen[6]]
 	printf "            |              |            \n"
 	printf "            |              |            \n"
 	printf "%s          |%s            |%s          \n" , v["宫"][8],v["宫"][1],v["宫"][6]
