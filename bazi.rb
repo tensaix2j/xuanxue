@@ -165,7 +165,7 @@ def main()
 
 	printf   "\n\n"
 	printf   "本命            | 大  流  流  流  | 流  流  流\n" 
-	printf	 "年  月  日  时  | 运  年  月  日  | 时  分  秒\n"
+	printf	 "年  月  日  时  | 运  年  月  日  | 时  刻  秒\n"
 	printf   "--------------------------------------------------\n"
 
 	printf 	 "%s  %s  %s  %s  | %s  %s  %s  %s  | %s  %s  %s\n" , 
