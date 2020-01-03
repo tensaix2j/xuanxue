@@ -81,7 +81,7 @@ def main()
 
 
 	#			        0,     1,     2,      3,       4,   5,     6,      7,      8,      9
-	v["九星"]     =  [ "" ,"天蓬", "芮禽", "天冲",   "天辅", "", "天心" ,"天柱", "天任" , "天英" ]
+	v["九星"]     =  [ "" ,"天蓬", "天禽", "天冲",   "天辅", "", "天心" ,"天柱", "天任" , "天英" ]
 	v["八神"]     =  [ "直符", "腾蛇", "太阴" ,"六合", "白虎" ,"玄武" ,"九地" ,"九天" ]
 	v["八门"]     =  [ "" ,   "休门",  "死门" ,   "伤门"  ,  "杜门" ,"",  "开门",    "惊门",  "生门" , "景门"]
 
@@ -128,22 +128,22 @@ def main()
 	# 3. # 2. 天盘 口诀： 符首定在地盘时干上。
 	tianpan = [0]
 	fushou  = ((( (sizhu[3][0] - sizhu[3][1]) % 12 ) / 2 ) + 4 ) % 10
-	zhishi  = 
-
+	
 	d_start = t_start = 0
 	(1..9).each { |i|
 		# i is gong index
 		
 		if dipan[i] == fushou
 			d_start = i
+			d_start = 2 if d_start == 5
 			t_start = i if sizhu[3][0] == 0
 		end	
 		if dipan[i] == sizhu[3][0]
 			t_start = i
+			t_start = 2 if t_start == 5
 			tianpan[i] = fushou
 		end
 	}
-
 
 
 
@@ -159,18 +159,20 @@ def main()
 
 
 	#4. 安九星： 值符随时干走
-	jiuxing = [0]*9
+
+	jiuxing = [0]*10
 	jiuxing[t_start] = d_start
 
 
 	
-	bashen  = [0]*9
+	bashen  = [0]*10
 	bashen[t_start] =  0
 
 
-	# 5. 八门根据 值使 + 时支
-	t2_start = v["地支宫位"][ sizhu[3][1] ]
-	bamen = [0] * 9
+	# 5. 八门根据 值使 
+	t2_start = (( ( d_start - 1 ) + sizhu[3][0]) % 9 ) + 1
+
+	bamen = [0] * 10
 	bamen[t2_start] = d_start
 
 	t_i 	= v["宫顺时"][t_start]
@@ -194,10 +196,7 @@ def main()
 		t2_i 	= v["宫顺时"][t2_i]		
 	}
 
-
-
-
-
+	
 
 
 
