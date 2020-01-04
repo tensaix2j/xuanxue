@@ -85,8 +85,8 @@ def main()
 	v["八神"]     =  [ "直符", "腾蛇", "太阴" ,"六合", "白虎" ,"玄武" ,"九地" ,"九天" ]
 	v["八门"]     =  [ "" ,   "休门",  "死门" ,   "伤门"  ,  "杜门" ,"",  "开门",    "惊门",  "生门" , "景门"]
 
-					# [ "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
-	v["地支宫位"]  =  [   1 ,   8 ,   8 ,   3 ,   4,   4,    9  ,  2,    2,    7 ,   6,   6 ]
+					#  "子"   "戌" "申" "午" "辰" "寅"
+	v["旬支"]	  =  [  0,    10,   8 ,  6 ,  4,   2 ]
 
 	nongli = CDate.new()
 
@@ -170,7 +170,23 @@ def main()
 
 
 	# 5. 八门根据 值使 
-	t2_start = (( ( d_start - 1 ) + sizhu[3][0]) % 9 ) + 1
+
+	# 旬支
+	xunzhi   		=  v["旬支"][ ((sizhu[3][0] - sizhu[3][1]) % 12 )  / 2  ]
+
+	steps_to_take 	=  ( sizhu[3][1] - xunzhi ) % 12  
+			
+	# 值使 走几步 
+	if yangyindun == 0 
+		# 旬支 到 时支 几步 ？
+		#steps_to_take 	=  ( sizhu[3][1] - xunzhi ) % 12  
+		t2_start = (( ( d_start - 1 ) + steps_to_take ) % 9 ) + 1
+	else 
+		#steps_to_take 	=  ( xunzhi - sizhu[3][1]  ) % 12  
+		t2_start = (( ( d_start - 1 ) - steps_to_take ) % 9 ) + 1
+	end
+		
+
 
 	bamen = [0] * 10
 	bamen[t2_start] = d_start
@@ -211,8 +227,9 @@ def main()
 	# Print relevant infos
 	printf "\n"
 	printf "%s%s局 \n" , ["阳","阴"][yangyindun] , ju
-	printf "节气: %s, 符首: %s , 值符: %s, 值使: %s\n" , subject_jieqi, v["天干"][fushou] , v["九星"][d_start],v["八门"][d_start]
-		
+	printf "节气: %s\n", subject_jieqi
+	printf "旬首: 甲%s ,  符首: %s , 值符: %s, 值使: %s\n" , v["地支"][xunzhi] , v["天干"][fushou]  , v["九星"][d_start],  v["八门"][d_start]
+			
 	puts "\n\n"
 
 
