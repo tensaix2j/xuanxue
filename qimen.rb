@@ -81,7 +81,7 @@ def main()
 
 
 	#			        0,     1,     2,      3,       4,   5,     6,      7,      8,      9
-	v["九星"]     =  [ "" ,"天蓬", "天禽", "天冲",   "天辅", "", "天心" ,"天柱", "天任" , "天英" ]
+	v["九星"]     =  [ "" ,"天蓬", "天芮", "天冲",   "天辅", "", "天心" ,"天柱", "天任" , "天英" ]
 	v["八神"]     =  [ "直符", "腾蛇", "太阴" ,"六合", "白虎" ,"玄武" ,"九地" ,"九天" ]
 	v["八门"]     =  [ "" ,   "休门",  "死门" ,   "伤门"  ,  "杜门" ,"",  "开门",    "惊门",  "生门" , "景门"]
 
@@ -129,12 +129,14 @@ def main()
 	tianpan = [0]
 	fushou  = ((( (sizhu[3][0] - sizhu[3][1]) % 12 ) / 2 ) + 4 ) % 10
 	
-	d_start = t_start = 0
+	d_start = t_start = ori_d_start = 0
+
 	(1..9).each { |i|
 		# i is gong index
 		
 		if dipan[i] == fushou
 			d_start = i
+			ori_d_start = i
 			d_start = 2 if d_start == 5
 			t_start = i if sizhu[3][0] == 0
 		end	
@@ -161,7 +163,9 @@ def main()
 	#4. 安九星： 值符随时干走
 
 	jiuxing = [0]*10
+	t_start = 2 if t_start == 5
 	jiuxing[t_start] = d_start
+
 
 
 	
@@ -175,17 +179,17 @@ def main()
 	xunzhi   		=  v["旬支"][ ((sizhu[3][0] - sizhu[3][1]) % 12 )  / 2  ]
 
 	steps_to_take 	=  ( sizhu[3][1] - xunzhi ) % 12  
-			
+
 	# 值使 走几步 
 	if yangyindun == 0 
 		# 旬支 到 时支 几步 ？
 		#steps_to_take 	=  ( sizhu[3][1] - xunzhi ) % 12  
-		t2_start = (( ( d_start - 1 ) + steps_to_take ) % 9 ) + 1
+		t2_start = (( ( ori_d_start - 1 ) + steps_to_take ) % 9 ) + 1
 	else 
 		#steps_to_take 	=  ( xunzhi - sizhu[3][1]  ) % 12  
-		t2_start = (( ( d_start - 1 ) - steps_to_take ) % 9 ) + 1
+		t2_start = (( ( ori_d_start - 1 ) - steps_to_take ) % 9 ) + 1
 	end
-		
+	t2_start = 2 if t2_start ==5 	
 
 
 	bamen = [0] * 10
