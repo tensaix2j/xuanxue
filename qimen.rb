@@ -10,7 +10,7 @@ def main()
 
 	v = {}
 
-	#              0     1     2     3     4     5     6    7    8     9
+	#              0     1     2     3     4     5     6    7    8     9     10    11
 	v["天干"] = [ "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸" ]
 	v["地支"] = [ "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
 	
@@ -44,6 +44,8 @@ def main()
 	#  三奇六仪:  戊、己、庚、辛、壬、癸、丁、丙、乙
 	#    w.r.t  天干 index
 	v["三奇六仪"] = [ 4,5,6,7,8,9 , 3,2,1 ]
+
+
 
 	# 阳遁
 	#上　　　　　中　　　　　下
@@ -87,6 +89,14 @@ def main()
 
 					#  "子"   "戌" "申" "午" "辰" "寅"
 	v["旬支"]	  =  [  0,    10,   8 ,  6 ,  4,   2 ]
+
+	                 	#申子辰     寅午戌     亥卯未      巳酉丑
+	v["三合"]     		= [ [8,0,4] , [2,6,10] , [11,3,7] , [5,9,1] ]
+	v["三合马星"]     	= [ 8,6,2,4, 8,6,2,4, 8,6,2,4 ]
+
+	#甲子旬中戌亥空；甲寅旬中子丑空；甲辰旬中寅卯空；
+ 	#甲午旬中辰巳空；甲申旬中午未空；甲戌旬中申酉空
+	v["空亡"] 			= [ [6], [7,2] , [9,2] , [4] , [3,8] , [1,8] ]	
 
 	nongli = CDate.new()
 
@@ -216,10 +226,16 @@ def main()
 		t2_i 	= v["宫顺时"][t2_i]		
 	}
 
+	ma_xing_pos = v["三合马星"][sizhu[3][1]]
+	ma_xing 	= ["  "] * 9
+	ma_xing[ ma_xing_pos ] = "马"
+
+	jiaxun = (( (sizhu[3][0] - sizhu[3][1]) % 12 ) / 2 )  % 10
+	kong_wang   = ["    "] * 9 
+	v["空亡"][jiaxun].each { |gong_index|
+		kong_wang[gong_index] = "空亡"
+	}
 	
-
-
-
 
 	# Printing...
 
@@ -241,9 +257,12 @@ def main()
 
 	printf "          %s|            %s|          %s\n" , v["天干"][tianpan[4]], v["天干"][tianpan[9]], v["天干"][tianpan[2]] 
 	printf "          %s|            %s|          %s\n" , v["天干"][dipan[4]]  , v["天干"][dipan[9]]  , v["天干"][dipan[2]] 
-	printf "%s        |%s          |%s        \n" 		, v["九星"][jiuxing[4]], v["九星"][jiuxing[9]], v["九星"][jiuxing[2]]
 	printf "%s        |%s          |%s        \n" 		, v["八神"][bashen[4]], v["八神"][bashen[9]], v["八神"][bashen[2]]
+	
+	printf "%s        |%s          |%s        \n" 		, v["九星"][jiuxing[4]], v["九星"][jiuxing[9]], v["九星"][jiuxing[2]]
 	printf "%s        |%s          |%s        \n" 		, v["八门"][bamen[4]], v["八门"][bamen[9]], v["八门"][bamen[2]]
+	printf "%s          |              |%s          \n" , ma_xing[4],ma_xing[2]
+	printf "%s        |%s              |%s        \n" 		, kong_wang[4], kong_wang[9],kong_wang[2]
 	printf "            |              |            \n"
 	printf "%s          |%s            |%s          \n" , v["宫"][4],v["宫"][9],v["宫"][2]
 	
@@ -251,9 +270,11 @@ def main()
 	printf "----------------------------------------\n"
 	printf "          %s|              |          %s\n" , v["天干"][tianpan[3]],   v["天干"][tianpan[7]] 
 	printf "          %s|            %s|          %s\n" , v["天干"][dipan[3]]  , v["天干"][dipan[5]]  , v["天干"][dipan[7]] 
-	printf "%s        |              |%s        \n" 		, v["九星"][jiuxing[3]],   v["九星"][jiuxing[7]]
 	printf "%s        |              |%s        \n" 		, v["八神"][bashen[3]],   v["八神"][bashen[7]]
+	
+	printf "%s        |              |%s        \n" 		, v["九星"][jiuxing[3]],   v["九星"][jiuxing[7]]
 	printf "%s        |              |%s        \n" 		, v["八门"][bamen[3]],   v["八门"][bamen[7]]
+	printf "%s        |              |%s        \n" 		, kong_wang[3], kong_wang[7]
 	printf "            |              |            \n"
 	printf "            |              |            \n"
 	printf "            |              |            \n"
@@ -264,10 +285,12 @@ def main()
 	
 	printf "          %s|            %s|          %s\n" , v["天干"][tianpan[8]], v["天干"][tianpan[1]], v["天干"][tianpan[6]] 
 	printf "          %s|            %s|          %s\n" , v["天干"][dipan[8]]  , v["天干"][dipan[1]]  , v["天干"][dipan[6]] 
-	printf "%s        |%s          |%s        \n" 		, v["九星"][jiuxing[8]], v["九星"][jiuxing[1]], v["九星"][jiuxing[6]]
 	printf "%s        |%s          |%s        \n" 		, v["八神"][bashen[8]], v["八神"][bashen[1]],   v["八神"][bashen[6]]
+	
+	printf "%s        |%s          |%s        \n" 		, v["九星"][jiuxing[8]], v["九星"][jiuxing[1]], v["九星"][jiuxing[6]]
 	printf "%s        |%s          |%s        \n" 		, v["八门"][bamen[8]],  v["八门"][bamen[1]],    v["八门"][bamen[6]]
-	printf "            |              |            \n"
+	printf "%s          |              |%s          \n" , ma_xing[8],ma_xing[6]
+	printf "%s        |%s          |%s        \n" 		, kong_wang[8], kong_wang[1],kong_wang[6]
 	printf "            |              |            \n"
 	printf "%s          |%s            |%s          \n" , v["宫"][8],v["宫"][1],v["宫"][6]
 	
